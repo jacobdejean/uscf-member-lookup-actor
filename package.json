@@ -1,8 +1,8 @@
 {
-    "name": "ts-start",
-    "version": "0.0.1",
+    "name": "uscf-member-lookup-actor",
+    "version": "0.0.2",
     "type": "module",
-    "description": "This is an example of an Apify actor.",
+    "description": "Extract public member data from uschess.org",
     "engines": {
         "node": ">=18.0.0"
     },
@@ -29,6 +29,6 @@
         "build": "tsc",
         "test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
     },
-    "author": "It's not you it's me",
+    "author": "Jacob DeJean",
     "license": "ISC"
 }
