@@ -1,0 +1,14 @@
+{
+    "title": "Lookup member ID on uschess.org",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "id": {
+            "title": "Member ID",
+            "type": "string",
+            "description": "The ID of the player you'd like to lookup.",
+            "editor": "textfield"
+        }
+    },
+    "required": ["id"]
+}
