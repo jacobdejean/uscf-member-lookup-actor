@@ -65,24 +65,21 @@ function selectExtractor(tabPath: string, htmlContent: string) {
     }
 }
 
-console.log(tabRecord);
+const memberData = {
+    general: tabRecord.get("msa/MbrDtlMain"),
+};
 
-// // Parse the downloaded HTML with Cheerio to enable data extraction.
-// const $ = cheerio.load(response.data);
-
-// // Extract all headings from the page (tag name and text).
-// const headings: { level: string; text: string }[] = [];
-// $("h1, h2, h3, h4, h5, h6").each((_i, element) => {
-//     const headingObject = {
-//         level: $(element).prop("tagName")!.toLowerCase(),
-//         text: $(element).text(),
-//     };
-//     console.log("Extracted heading", headingObject);
-//     headings.push(headingObject);
-// });
+invariant(
+    input.id === memberData.general.ID,
+    "Extracted member info does not match input search",
+);
 
 // Save headings to Dataset - a table-like storage.
-// await Actor.pushData(headings);
+await Actor.pushData([
+    {
+        [memberData.general.ID]: memberData,
+    },
+]);
 
 // Gracefully exit the Actor process. It's recommended to quit all Actors with an exit().
 await Actor.exit();
