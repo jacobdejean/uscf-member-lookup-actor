@@ -1,86 +1,69 @@
-## Scrape single-page in TypeScript template
+## US Chess Federation Member Lookup (uschess.org)
 
-A template for scraping data from a single web page in TypeScript (Node.js). The URL of the web page is passed in via input, which is defined by the [input schema](https://docs.apify.com/platform/actors/development/input-schema). The template uses the [Axios client](https://axios-http.com/docs/intro) to get the HTML of the page and the [Cheerio library](https://cheerio.js.org/) to parse the data from it. The data are then stored in a [dataset](https://docs.apify.com/sdk/js/docs/guides/result-storage#dataset) where you can easily access them.
+### What does USCF Member Lookup do?
 
-The scraped data in this template are page headings but you can easily edit the code to scrape whatever you want from the page.
+This actor scrapes public member information from uschess.org given a member ID.
 
-## Included features
+### Why use this actor?
 
-- **[Apify SDK](https://docs.apify.com/sdk/js/)** - a toolkit for building [Actors](https://apify.com/actors)
-- **[Input schema](https://docs.apify.com/platform/actors/development/input-schema)** - define and easily validate a schema for your Actor's input
-- **[Dataset](https://docs.apify.com/sdk/js/docs/guides/result-storage#dataset)** - store structured data where each object stored has the same attributes
-- **[Axios client](https://axios-http.com/docs/intro)** - promise-based HTTP Client for Node.js and the browser
-- **[Cheerio](https://cheerio.js.org/)** - library for parsing and manipulating HTML and XML
+This actor is useful as uschess.org offers no API for accessing this public information, while chess clubs around the world rely on its up-to-date information to check a player's ratings and eligibility for participation in tournaments. uschess.org offers member information in a (abliet archaic) table-like format. The organization of said table is quite bespoke, though. They often combine multiple data points in the same table cell, creating tedious parsing requirements. They also like to use inconsistent data types in each field, for example the member's expiration date is usually `2026-01-31` but occasionally it will say stuff like `LIFETIME`, for grandmaster for example. Also, if a member has no rank in a certain category, it will say `(UNRATED)` instead of a number. You will definitely want to consider this when consuming the actor.
 
-## How it works
+### How do I use this actor?
 
-1. `Actor.getInput()` gets the input where the page URL is defined
-2. `axios.get(url)` fetches the page
-3. `cheerio.load(response.data)` loads the page data and enables parsing the headings
-4. This parses the headings from the page and here you can edit the code to parse whatever you need from the page
-    
-    ```javascript
-    $("h1, h2, h3, h4, h5, h6").each((_i, element) => {...});
-    ```
-    
-5. `Actor.pushData(headings)` stores the headings in the dataset
+Currently this actor takes a single input, the member ID.
 
-## Resources
+```json
+{
+    "id": "12345"
+}
+```
 
-- [Web scraping in Node.js with Axios and Cheerio](https://blog.apify.com/web-scraping-with-axios-and-cheerio/)
-- [Web scraping with Cheerio in 2023](https://blog.apify.com/web-scraping-with-cheerio/)
-- [Video tutorial](https://www.youtube.com/watch?v=yTRHomGg9uQ) on building a scraper using CheerioCrawler
-- [Written tutorial](https://docs.apify.com/academy/web-scraping-for-beginners/challenge) on building a scraper using CheerioCrawler
-- [Integration with Zapier](https://apify.com/integrations), Make, Google Drive, and others
-- [Video guide on getting scraped data using Apify API](https://www.youtube.com/watch?v=ViYYDHSBAKM)
-- A short guide on how to build web scrapers using code templates:
+and it creates a dataset in this shape:
 
-[web scraper template](https://www.youtube.com/watch?v=u-i-Korzf8w)
+```json
+[
+    {
+        "12345678": {
+            "general": {
+                "Regular Rating": "1300",
+                "Quick Rating": "1200",
+                "Blitz Rating": "(Unrated)",
+                "Online-Regular Rating": "(Unrated)",
+                "Online-Quick Rating": "(Unrated)",
+                "Online-Blitz Rating": "(Unrated)",
+                "Overall Ranking": "16900(Tied)",
+                "Correspondence Rating": "(Unrated)",
+                "State": "MA",
+                "Gender": "M",
+                "Name": "PLAYER NAME",
+                "ID": "12345678",
+                "Expiration Dt.": "2026-01-30",
+                "Last Change Dt.": "2025-01-26"
+            }
+        }
+    }
+]
+```
 
+### Compatibilty
 
+Please note that uschess.org's member lookup site is very old and hasn't been visually updated in awhile. Specifically, this Actor was built targeting `Version 1.00b / 2003-10-16`. If this changes, which seems unlikely, this actor will be promptly updated to remain operational. Please leave an issue here if anything doesn't work or contact me at inbox@dejean.dev! Also note, their site's pretty slow. It could take up to a few seconds to recieve data.
 
-## Getting started
+### Roadmap
 
-For complete information [see this article](https://docs.apify.com/platform/actors/development#build-actor-at-apify-console). In short, you will:
+This actor is undergoing development.
 
-1. Build the Actor
-2. Run the Actor
+Implemented:
 
-## Pull the Actor for local development
+- General tab (most basic info, see example dataset above)
 
-If you would like to develop locally, you can pull the existing Actor from Apify console using Apify CLI:
+Not yet implemented:
 
-1. Install `apify-cli`
+- More tab (milestones)
+- Rating Supplement tab (entries)
+- Tournament Director tab (if member can host tournaments)
+- Tournament History tab (entries)
 
-    **Using Homebrew**
+For efficieny's sake, I also plan to create input parameters to restrict scaped data. For now all player data is collected.
 
-    ```bash
-    brew install apify-cli
-    ```
-
-    **Using NPM**
-
-    ```bash
-    npm -g install apify-cli
-    ```
-
-2. Pull the Actor by its unique `<ActorId>`, which is one of the following:
-    - unique name of the Actor to pull (e.g. "apify/hello-world")
-    - or ID of the Actor to pull (e.g. "E2jjCZBezvAZnX8Rb")
-
-    You can find both by clicking on the Actor title at the top of the page, which will open a modal containing both Actor unique name and Actor ID.
-
-    This command will copy the Actor into the current directory on your local machine.
-
-    ```bash
-    apify pull <ActorId>
-    ```
-
-## Documentation reference
-
-To learn more about Apify and Actors, take a look at the following resources:
-
-- [Apify SDK for JavaScript documentation](https://docs.apify.com/sdk/js)
-- [Apify SDK for Python documentation](https://docs.apify.com/sdk/python)
-- [Apify Platform documentation](https://docs.apify.com/platform)
-- [Join our developer community on Discord](https://discord.com/invite/jyEM2PRvMU)
+### Feedback
